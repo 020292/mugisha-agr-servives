@@ -1,154 +1,124 @@
+
 <!DOCTYPE html>
 <html lang="sw">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mugisha Kilimo | Nyumbani</title>
+    <title>Mugisha Agr Services | Blogu ya Kilimo</title>
     <style>
-        :root { --green: #2e7d32; --white: #ffffff; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f0f2f5; color: #333; }
-        header { background: var(--green); color: var(--white); padding: 25px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        nav { background: var(--white); padding: 12px; border-bottom: 2px solid var(--green); text-align: center; sticky: top; }
-        nav a { margin: 0 15px; text-decoration: none; color: var(--green); font-weight: bold; }
-        .container { max-width: 800px; margin: 20px auto; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        .profile-section { text-align: center; padding: 20px; border-bottom: 1px solid #eee; }
-        .profile-pic { width: 140px; height: 140px; border-radius: 50%; border: 4px solid var(--green); object-fit: cover; margin-bottom: 10px; }
-        .weather-box { background: #e8f5e9; padding: 15px; border-radius: 8px; margin: 20px 0; border-left: 6px solid var(--green); }
-        .admin-panel { background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 40px; border: 1px dashed #ccc; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; }
-        .btn { background: var(--green); color: white; padding: 12px; border: none; border-radius: 6px; cursor: pointer; width: 100%; font-size: 16px; font-weight: bold; }
-        .btn:hover { background: #1b5e20; }
-        .social-links a { margin: 0 10px; color: var(--green); text-decoration: none; font-size: 14px; border: 1px solid var(--green); padding: 5px 10px; border-radius: 20px; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f4; }
+        header { background-color: #2e7d32; color: white; padding: 20px; text-align: center; border-radius: 10px; margin-bottom: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        
+        /* Sehemu ya Makala */
+        #postContainer { margin-bottom: 40px; }
+        .post-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid #2e7d32; }
+        .post-card h3 { color: #2e7d32; margin-top: 0; }
+        
+        /* Sehemu ya Admin */
+        .admin-panel { background: #e8f5e9; padding: 25px; border-radius: 10px; border: 2px dashed #2e7d32; margin-top: 50px; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
+        button { background-color: #2e7d32; color: white; padding: 12px 25px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+        button:hover { background-color: #1b5e20; }
     </style>
 </head>
 <body>
 
-<header>
-    <h1>MUGISHA KILIMO</h1>
-    <p>Kilimo biashara na utaalamu wa Agronomy</p>
-</header>
-
-<nav>
-    <a href="index.html">Nyumbani</a>
-    <a href="#admin">Admin</a>
-    <span id="weather-top" style="margin-left: 20px;">⛅ Igowole: 21°C</span>
-</nav>
-
 <div class="container">
-    <div class="profile-section">
-        <img src="https://via.placeholder.com/150" alt="Mugisha" class="profile-pic">
-        <h2>Mugisha</h2>
-        <p>Agronomist & Extension Officer</p>
-        <div class="social-links">
-            <a href="#">WhatsApp</a>
-            <a href="#">Instagram</a>
-            <a href="#">Facebook</a>
-        </div>
+    <header>
+        <h1>Mugisha Agr Services</h1>
+        <p>Elimu ya Kilimo Biashara kwa Wakulima</p>
+    </header>
+
+    <!-- HAPA NDIPO MAKALA ZITAONEKANA -->
+    <div id="postContainer">
+        <p style="text-align: center;">Inapakia makala...</p>
     </div>
 
-    <div class="weather-box">
-        <h4>Hali ya Hewa Leo - Igowole, Mufindi</h4>
-        <p id="weather-desc">Mawingu kiasi, unyevunyevu unaruhusu matumizi ya viuatilifu vya kukata (Contact Herbicides).</p>
-    </div>
-
-    <h3>Makala za Karibuni</h3>
-    <div style="padding: 15px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 15px;">
-        <h4>Kilimo cha Ngano na Mbinu za Kudhibiti Kutu</h4>
-        <p>Soma mbinu za kitaalamu za kulinda shamba lako...</p>
-        <a href="post.html" style="color: var(--green); font-weight: bold;">Soma Makala Kamili →</a>
-    </div>
-
-    <!-- Admin Panel -->
-    <div class="admin-panel" id="admin">
-        <h3 style="color: #444;">🔐 Admin Control Panel</h3>
-        <p style="font-size: 13px; color: #666;">Weka password yako kupost maudhui mapya.</p>
-        <input type="password" id="adminKey" placeholder="Ingiza Password (020292)">
-        <button class="btn" onclick="verifyAdmin()">Fungua Panel</button>
-
-        <div id="hiddenPanel" style="display:none; margin-top: 20px; border-top: 2px solid var(--green); padding-top: 20px;">
-            <h4>Tuma Post Mpya</h4>
-            <input type="text" placeholder="Kichwa cha Habari">
-            <textarea placeholder="Andika maudhui hapa..."></textarea>
-            <p>Ongeza Picha/Video:</p>
-            <input type="file" accept="image/*,video/*">
-            <input type="text" placeholder="Weka Link ya kushare (WhatsApp/YouTube)">
-            <button class="btn" style="background: #333;" onclick="alert('Imetumwa kwa mafanikio!')">Chapisha Sasa</button>
-        </div>
+    <!-- HAPA NI SEHEMU YA ADMIN (WEWE TU NDIO UPAJUE) -->
+    <div class="admin-panel">
+        <h3>Admin: Chapisha Makala Mpya</h3>
+        <input type="text" id="postTitle" placeholder="Kichwa cha habari (mf. Jinsi ya kupanda mahindi)">
+        <textarea id="postContent" rows="5" placeholder="Andika maelezo ya kina hapa..."></textarea>
+        <button onclick="chapishaPost()">Chapisha Makala Sasa</button>
     </div>
 </div>
 
-<script>
-    function verifyAdmin() {
-        const key = document.getElementById('adminKey').value;
-        if(key === "020292") {
-            document.getElementById('hiddenPanel').style.display = 'block';
-            alert("Karibu Mugisha! Panel imefunguliwa.");
-        } else {
-            alert("Password si sahihi. Jaribu tena!");
-        }
-    }
-</script>
-<!-- Firebase Libraries -->
+<!-- FIREBASE LIBRARIES -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
 <script>
-  // 1. Unganisha na Firebase yako
-  const firebaseConfig = {
-    apiKey: "AIzaSyBSQ_oUvMBVXUOlB573I6cbxMsoGs0U8B0",
-    authDomain: "mugisha-agr-services.firebaseapp.com",
-    projectId: "mugisha-agr-services",
-    storageBucket: "mugisha-agr-services.firebasestorage.app",
-    messagingSenderId: "206696080160",
-    appId: "1:206696080160:web:2405545d8cf850d88e2d45"
-  };
+    // Kodi zako za Firebase (Mugisha Agr Services)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBSQ_oUvMBVXUOlB573I6cbxMsoGs0U8B0",
+        authDomain: "mugisha-agr-services.firebaseapp.com",
+        projectId: "mugisha-agr-services",
+        storageBucket: "mugisha-agr-services.firebasestorage.app",
+        messagingSenderId: "206696080160",
+        appId: "1:206696080160:web:2405545d8cf850d88e2d45"
+    };
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+    // Anzisha Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-  // 2. Kazi ya Kupost Makala Mpya (Inaitwa na Admin Panel yako)
-  async function chapishaPost() {
-      const title = document.getElementById('postTitle').value;
-      const content = document.getElementById('postContent').value;
+    // KAZI YA 1: KUPATA MAKALA NA KUZIONYESHA
+    db.collection("makala").orderBy("tarehe", "desc").onSnapshot((snapshot) => {
+        const container = document.getElementById('postContainer');
+        let html = "";
+        
+        if (snapshot.empty) {
+            container.innerHTML = "<p style='text-align:center;'>Bado hakuna makala yoyote. Tumia fomu ya chini kuandika ya kwanza!</p>";
+            return;
+        }
 
-      if (!title || !content) {
-          alert("Tafadhali jaza kichwa na maelezo!");
-          return;
-      }
+        snapshot.forEach((doc) => {
+            const post = doc.data();
+            const tarehe = post.tarehe ? post.tarehe.toDate().toLocaleDateString('sw-TZ') : "Leo";
+            
+            html += `
+                <div class="post-card">
+                    <h3>${post.kichwa}</h3>
+                    <p>${post.maelezo}</p>
+                    <small style="color: #666;">Imechapishwa: ${tarehe}</small>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    });
 
-      try {
-          await db.collection("makala").add({
-              kichwa: title,
-              maelezo: content,
-              tarehe: new Date()
-          });
-          alert("Hongera Mugisha! Makala imechapishwa vizuri.");
-          location.reload(); 
-      } catch (e) {
-          alert("Kuna tatizo: " + e.message);
-      }
-  }
+    // KAZI YA 2: KUTUMA MAKALA KWENYE FIREBASE
+    async function chapishaPost() {
+        const title = document.getElementById('postTitle').value;
+        const content = document.getElementById('postContent').value;
+        const btn = document.querySelector('button');
 
-  // 3. Kazi ya kuonyesha Makala kwenye Website
-  db.collection("makala").orderBy("tarehe", "desc").onSnapshot((snapshot) => {
-      const container = document.getElementById('postContainer');
-      if (!container) return;
+        if (!title || !content) {
+            alert("Mugisha, tafadhali jaza kichwa na maelezo!");
+            return;
+        }
 
-      let html = "";
-      snapshot.forEach((doc) => {
-          let post = doc.data();
-          html += `
-              <div style="border-bottom: 2px solid #2e7d32; padding: 15px; margin-top: 15px; background: #f9f9f9; border-radius: 5px;">
-                  <h3 style="color: #2e7d32;">${post.kichwa}</h3>
-                  <p>${post.maelezo.substring(0, 150)}...</p>
-                  <small>Imechapishwa: ${post.tarehe.toDate().toLocaleDateString('sw-TZ')}</small>
-                  <br>
-                  <a href="post.html?id=${doc.id}" style="color: #1b5e20; font-weight: bold;">Soma Zaidi →</a>
-              </div>
-          `;
-      });
-      container.innerHTML = html;
-  });
+        btn.disabled = true;
+        btn.innerText = "Inatuma...";
+
+        try {
+            await db.collection("makala").add({
+                kichwa: title,
+                maelezo: content,
+                tarehe: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Hongera! Makala imechapishwa vizuri.");
+            document.getElementById('postTitle').value = "";
+            document.getElementById('postContent').value = "";
+        } catch (e) {
+            alert("Kuna tatizo: " + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerText = "Chapisha Makala Sasa";
+        }
+    }
 </script>
+
 </body>
 </html>
