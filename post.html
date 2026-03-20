@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADMIN | Mugisha Agr Services</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #e8f5e9; }
+        .admin-box { max-width: 500px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { width: 100%; padding: 15px; background: #2e7d32; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+<div class="admin-box">
+    <h2 style="color: #2e7d32;">Mugisha Admin Panel</h2>
+    <p>Andika makala hapa ili itokee kwenye Website.</p>
+    <input type="text" id="postTitle" placeholder="Kichwa cha makala...">
+    <textarea id="postContent" rows="8" placeholder="Maelezo ya kilimo..."></textarea>
+    <button onclick="chapishaPost()">CHAPISHA SASA</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBSQ_oUvMBVXUOlB573I6cbxMsoGs0U8B0",
+        authDomain: "mugisha-agr-services.firebaseapp.com",
+        projectId: "mugisha-agr-services",
+        storageBucket: "mugisha-agr-services.firebasestorage.app",
+        messagingSenderId: "206696080160",
+        appId: "1:206696080160:web:2405545d8cf850d88e2d45"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function chapishaPost() {
+        const title = document.getElementById('postTitle').value;
+        const content = document.getElementById('postContent').value;
+        if(!title || !content) { alert("Jaza vyote!"); return; }
+
+        try {
+            await db.collection("makala").add({
+                kichwa: title, maelezo: content, tarehe: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Imetoka!");
+            document.getElementById('postTitle').value = "";
+            document.getElementById('postContent').value = "";
+        } catch (e) { alert("Kosa: " + e.message); }
+    }
+</script>
+</body>
+</html>
