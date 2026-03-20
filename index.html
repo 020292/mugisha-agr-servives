@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mugisha Agr Services | Blogu Rasmi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { 
+            --primary: #1b5e20; --secondary: #2e7d32; --light: #f4f9f4; 
+            --wa: #25d366; --fb: #1877f2; --tg: #0088cc; --x: #000000; --in: #0077b5; 
+        }
+        body { font-family: 'Roboto', sans-serif; margin: 0; background: var(--light); color: #333; scroll-behavior: smooth; }
+        
+        header { background: var(--primary); color: white; padding: 30px 20px; text-align: center; cursor: pointer; position: relative; }
+        .visitor-count { position: absolute; top: 10px; right: 10px; font-size: 12px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 20px; }
+
+        .container { max-width: 900px; margin: auto; padding: 20px; padding-bottom: 80px; }
+
+        /* Login & Admin */
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 10000; }
+        #customLogin { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 25px; border-radius: 15px; box-shadow: 0 0 50px rgba(0,0,0,0.5); z-index: 10001; width: 280px; text-align: center; border: 2px solid var(--primary); }
+        #customLogin input { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 18px; }
+        #adminPanel { display: none; background: white; padding: 25px; border-radius: 15px; border: 3px solid var(--primary); margin-bottom: 30px; }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-post { background: var(--primary); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+        /* Post Card */
+        .post-card { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); }
+        .post-media img { width: 100%; height: auto; display: block; border-bottom: 1px solid #eee; }
+        .post-content { padding: 25px; }
+        .post-content h2 { color: var(--primary); margin: 0 0 15px 0; }
+        
+        /* Share Buttons - MPYA */
+        .share-label { font-size: 12px; color: #777; font-weight: bold; margin-bottom: 8px; display: block; }
+        .share-container { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0; padding: 15px 0; border-top: 1px solid #eee; border-bottom: 1px solid #eee; }
+        .share-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; font-size: 16px; transition: 0.2s; }
+        .share-icon:hover { transform: translateY(-3px); opacity: 0.9; }
+
+        /* Author & Contact */
+        .author-box { display: flex; align-items: center; background: #fdfdfd; padding: 20px; border-radius: 12px; margin-top: 20px; border: 1px solid #eee; }
+        .author-img { width: 60px; height: 60px; border-radius: 50%; background: var(--primary); margin-right: 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; color: white; }
+        .author-info h4 { margin: 0; color: var(--primary); font-size: 18px; }
+        .contact-links { margin-top: 8px; }
+        .contact-links a { text-decoration: none; color: var(--primary); font-size: 13px; font-weight: bold; margin-right: 15px; border-bottom: 1px solid transparent; }
+        .contact-links a:hover { border-bottom: 1px dotted var(--primary); }
+
+        /* Comments */
+        .comment-section { background: #fafafa; padding: 20px; border-top: 1px solid #eee; }
+        .comment-list { max-height: 250px; overflow-y: auto; margin-bottom: 15px; }
+        .comment-box { background: white; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; border: 1px solid #efefef; }
+        .comment-name { font-weight: bold; font-size: 13px; color: var(--secondary); margin-bottom: 3px; display: block; }
+        .comment-text { font-size: 14px; line-height: 1.4; }
+
+        .home-btn { position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 999; border: none; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        footer { text-align: center; padding: 40px; color: #888; font-size: 12px; }
+    </style>
+</head>
+<body id="top">
+
+<button class="home-btn" onclick="window.scrollTo({top:0, behavior:'smooth'})"><i class="fas fa-arrow-up"></i></button>
+
+<div id="overlay"></div>
+<div id="customLogin">
+    <h3 style="margin:0; color:var(--primary);">Admin Login</h3>
+    <input type="password" id="passInput" placeholder="••••••">
+    <button class="btn-post" onclick="checkPassword()">INGIA</button>
+    <p onclick="closeLogin()" style="color:red; cursor:pointer; font-size:11px; margin-top:10px;">Funga</p>
+</div>
+
+<header onclick="openLogin()">
+    <div class="visitor-count"><i class="fas fa-eye"></i> Visitors: <span id="count">0</span></div>
+    <h1>Mugisha Agr Services</h1>
+    <p>Kilimo Biashara & Teknolojia ya Kijani</p>
+</header>
+
+<div class="container">
+    <div id="adminPanel">
+        <h3 style="margin:0; color:var(--primary);">Post Makala Mpya</h3>
+        <input type="text" id="postTitle" placeholder="Kichwa cha Habari...">
+        <textarea id="postContent" rows="6" placeholder="Maelezo ya makala..."></textarea>
+        <input type="text" id="mediaUrl" placeholder="Link ya Picha (Mfano: https://...)">
+        <button class="btn-post" onclick="chapishaPost()">CHAPISHA SASA</button>
+        <button class="btn-post" style="background:#666; margin-top:10px;" onclick="location.reload()">ONDOKA (LOGOUT)</button>
+    </div>
+
+    <div id="postContainer">
+        <p style="text-align:center; padding:50px;">Inapakia makala...</p>
+    </div>
+</div>
+
+<footer><p>&copy; 2026 Mugisha Agr Services. Haki zote zimehifadhiwa.</p></footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBSQ_oUvMBVXUOlB573I6cbxMsoGs0U8B0",
+        authDomain: "mugisha-agr-services.firebaseapp.com",
+        projectId: "mugisha-agr-services",
+        storageBucket: "mugisha-agr-services.firebasestorage.app",
+        messagingSenderId: "206696080160",
+        appId: "1:206696080160:web:2405545d8cf850d88e2d45"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    let isAdmin = false;
+
+    function openLogin() { document.getElementById('overlay').style.display = 'block'; document.getElementById('customLogin').style.display = 'block'; }
+    function closeLogin() { document.getElementById('overlay').style.display = 'none'; document.getElementById('customLogin').style.display = 'none'; }
+    
+    function checkPassword() {
+        if(document.getElementById('passInput').value === "020292") {
+            isAdmin = true; closeLogin();
+            document.getElementById('adminPanel').style.display = 'block';
+            renderPosts();
+        } else { alert("Password Sio Sahihi!"); }
+    }
+
+    function renderPosts() {
+        db.collection("makala").orderBy("tarehe", "desc").onSnapshot((snapshot) => {
+            const container = document.getElementById('postContainer');
+            container.innerHTML = "";
+            snapshot.forEach((doc) => {
+                const post = doc.data();
+                const pid = doc.id;
+                const pTitle = encodeURIComponent(post.kichwa);
+                const pUrl = encodeURIComponent(window.location.href);
+                
+                const postEl = document.createElement('div');
+                postEl.className = 'post-card';
+                postEl.innerHTML = `
+                    ${post.mediaUrl ? `<img src="${post.mediaUrl}">` : ''}
+                    <div class="post-content">
+                        ${isAdmin ? `<button onclick="futaPost('${pid}')" style="background:#ff4444; color:white; border:none; padding:6px 12px; border-radius:5px; margin-bottom:15px; cursor:pointer;"><i class="fas fa-trash"></i> Futa</button>` : ''}
+                        <h2>${post.kichwa}</h2>
+                        <div style="white-space:pre-wrap; line-height:1.7;">${post.maelezo}</div>
+                        
+                        <div class="share-container">
+                            <span class="share-label">SHARE KWA WENGINE:</span>
+                            <a href="https://wa.me/?text=${pTitle}%20${pUrl}" target="_blank" class="share-icon" style="background:var(--wa)"><i class="fab fa-whatsapp"></i></a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=${pUrl}" target="_blank" class="share-icon" style="background:var(--fb)"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://twitter.com/intent/tweet?url=${pUrl}&text=${pTitle}" target="_blank" class="share-icon" style="background:var(--x)"><i class="fab fa-x-twitter"></i></a>
+                            <a href="https://t.me/share/url?url=${pUrl}&text=${pTitle}" target="_blank" class="share-icon" style="background:var(--tg)"><i class="fab fa-telegram-plane"></i></a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=${pUrl}" target="_blank" class="share-icon" style="background:var(--in)"><i class="fab fa-linkedin-in"></i></a>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link imekopiwa!')" class="share-icon" style="background:#666; border:none; cursor:pointer;"><i class="fas fa-link"></i></button>
+                        </div>
+
+                        <div class="author-box">
+                            <div class="author-img"><i class="fas fa-seedling"></i></div>
+                            <div class="author-info">
+                                <h4>Mugisha | Agr Expert</h4>
+                                <p>Ninakusaidia kufanya kilimo kwa weledi, kisasa na tija zaidi.</p>
+                                <div class="contact-links">
+                                    <a href="tel:+255000000000"><i class="fas fa-phone-alt"></i> Piga Simu</a>
+                                    <a href="mailto:info@mugisha.com"><i class="fas fa-envelope"></i> Email Us</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="comment-section">
+                        <h4 style="margin:0 0 10px 0; font-size:15px;"><i class="far fa-comments"></i> Maoni ya Wadau</h4>
+                        <div id="comments-${pid}" class="comment-list"></div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <input type="text" id="name-${pid}" placeholder="Jina lako..." style="padding:10px; border:1px solid #ddd;">
+                            <div style="display:flex; gap:5px;">
+                                <input type="text" id="text-${pid}" placeholder="Andika maoni hapa..." style="flex:1; padding:10px; border:1px solid #ddd;">
+                                <button onclick="wekaMaoni('${pid}')" style="background:var(--primary); color:white; border:none; padding:0 15px; border-radius:5px; cursor:pointer;">Tuma</button>
+                            </div>
+                        </div>
+                    </div>`;
+                container.appendChild(postEl);
+                loadComments(pid);
+            });
+        });
+    }
+
+    async function wekaMaoni(pid) {
+        const jina = document.getElementById(`name-${pid}`).value;
+        const ujumbe = document.getElementById(`text-${pid}`).value;
+        if(jina && ujumbe) {
+            await db.collection("makala").doc(pid).collection("comments").add({
+                name: jina, text: ujumbe, tarehe: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            document.getElementById(`text-${pid}`).value = "";
+        }
+    }
+
+    function loadComments(pid) {
+        db.collection("makala").doc(pid).collection("comments").orderBy("tarehe", "asc").onSnapshot(snap => {
+            const cDiv = document.getElementById(`comments-${pid}`);
+            cDiv.innerHTML = "";
+            snap.forEach(cDoc => {
+                const c = cDoc.data();
+                cDiv.innerHTML += `<div class="comment-box"><span class="comment-name">${c.name}</span><div class="comment-text">${c.text}</div></div>`;
+            });
+        });
+    }
+
+    async function chapishaPost() {
+        const t = document.getElementById('postTitle').value;
+        const c = document.getElementById('postContent').value;
+        const m = document.getElementById('mediaUrl').value;
+        if(t && c) {
+            await db.collection("makala").add({ kichwa: t, maelezo: c, mediaUrl: m, tarehe: firebase.firestore.FieldValue.serverTimestamp() });
+            alert("Makala imepostiwa!");
+            document.getElementById('postTitle').value = ""; document.getElementById('postContent').value = ""; document.getElementById('mediaUrl').value = "";
+        }
+    }
+
+    async function futaPost(id) { if(confirm("Je, una uhakika unataka kufuta makala hii?")) await db.collection("makala").doc(id).delete(); }
+
+    renderPosts();
+    let v = localStorage.getItem('v') || 170;
+    v = parseInt(v) + 1; localStorage.setItem('v', v);
+    document.getElementById('count').innerText = v;
+</script>
+</body>
+</html>
