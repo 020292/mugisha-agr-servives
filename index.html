@@ -88,6 +88,67 @@
         }
     }
 </script>
+<!-- Firebase Libraries -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 
+<script>
+  // 1. Unganisha na Firebase yako
+  const firebaseConfig = {
+    apiKey: "AIzaSyBSQ_oUvMBVXUOlB573I6cbxMsoGs0U8B0",
+    authDomain: "mugisha-agr-services.firebaseapp.com",
+    projectId: "mugisha-agr-services",
+    storageBucket: "mugisha-agr-services.firebasestorage.app",
+    messagingSenderId: "206696080160",
+    appId: "1:206696080160:web:2405545d8cf850d88e2d45"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  // 2. Kazi ya Kupost Makala Mpya (Inaitwa na Admin Panel yako)
+  async function chapishaPost() {
+      const title = document.getElementById('postTitle').value;
+      const content = document.getElementById('postContent').value;
+
+      if (!title || !content) {
+          alert("Tafadhali jaza kichwa na maelezo!");
+          return;
+      }
+
+      try {
+          await db.collection("makala").add({
+              kichwa: title,
+              maelezo: content,
+              tarehe: new Date()
+          });
+          alert("Hongera Mugisha! Makala imechapishwa vizuri.");
+          location.reload(); 
+      } catch (e) {
+          alert("Kuna tatizo: " + e.message);
+      }
+  }
+
+  // 3. Kazi ya kuonyesha Makala kwenye Website
+  db.collection("makala").orderBy("tarehe", "desc").onSnapshot((snapshot) => {
+      const container = document.getElementById('postContainer');
+      if (!container) return;
+
+      let html = "";
+      snapshot.forEach((doc) => {
+          let post = doc.data();
+          html += `
+              <div style="border-bottom: 2px solid #2e7d32; padding: 15px; margin-top: 15px; background: #f9f9f9; border-radius: 5px;">
+                  <h3 style="color: #2e7d32;">${post.kichwa}</h3>
+                  <p>${post.maelezo.substring(0, 150)}...</p>
+                  <small>Imechapishwa: ${post.tarehe.toDate().toLocaleDateString('sw-TZ')}</small>
+                  <br>
+                  <a href="post.html?id=${doc.id}" style="color: #1b5e20; font-weight: bold;">Soma Zaidi →</a>
+              </div>
+          `;
+      });
+      container.innerHTML = html;
+  });
+</script>
 </body>
 </html>
