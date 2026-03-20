@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mugisha Agr Services | Blogu Rasmi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #1b5e20; --secondary: #2e7d32; --light: #f4f9f4; }
+        body { font-family: 'Roboto', sans-serif; margin: 0; background: var(--light); color: #333; }
+        
+        header { background: var(--primary); color: white; padding: 30px 20px; text-align: center; cursor: pointer; position: relative; }
+        .visitor-count { position: absolute; top: 10px; right: 10px; font-size: 12px; background: rgba(0,0,0,0.2); padding: 5px 10px; border-radius: 20px; }
+
+        .container { max-width: 900px; margin: auto; padding: 20px; }
+
+        .weather-box { background: white; padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+
+        /* Admin Panel */
+        #adminPanel { display: none; background: white; padding: 25px; border-radius: 15px; border: 3px solid var(--primary); margin-bottom: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        input, textarea { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        .btn-post { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
+
+        /* Post Card */
+        .post-card { background: white; border-radius: 15px; overflow: hidden; margin-bottom: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); position: relative; }
+        .post-media img, .post-media video { width: 100%; height: auto; max-height: 500px; object-fit: cover; }
+        .post-content { padding: 25px; }
+        .post-content h2 { color: var(--primary); margin: 0 0 15px 0; font-size: 26px; }
+        .post-text { line-height: 1.8; font-size: 17px; white-space: pre-wrap; margin-bottom: 20px; }
+
+        /* Delete Button (Hidden by default) */
+        .delete-btn { display: none; background: #ff4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; margin-bottom: 15px; }
+        .delete-btn:hover { background: #cc0000; }
+
+        .author-section { display: flex; align-items: center; background: #f9f9f9; padding: 20px; border-radius: 10px; margin-top: 30px; }
+        .author-img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--primary); margin-right: 20px; }
+        .author-details h4 { margin: 0; color: var(--primary); font-size: 18px; }
+        .social-links a { color: var(--primary); margin-right: 15px; font-size: 20px; text-decoration: none; }
+
+        footer { text-align: center; padding: 30px; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<header onclick="funguaAdmin()">
+    <div class="visitor-count"><i class="fas fa-users"></i> Visitors: <span id="count">0</span></div>
+    <h1>Mugisha Agr Services</h1>
+    <p>Mtaalamu wa Kilimo Biashara & Blogu ya Habari</p>
+</header>
+
+<div class="container">
+    <div class="weather-box">
+        <div><i class="fas fa-cloud-sun" style="color: orange; font-size: 24px;"></i> <b>Hali ya Hewa:</b> Tanzania</div>
+        <div id="temp">29°C - Jua la Wastani</div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div id="adminPanel">
+        <h3 style="margin-top:0; color: var(--primary);">Admin Mode: Karibu Mugisha</h3>
+        <input type="text" id="postTitle" placeholder="Kichwa cha Habari...">
+        <textarea id="postContent" rows="6" placeholder="Maelezo ya makala..."></textarea>
+        <input type="text" id="mediaUrl" placeholder="Link ya Picha au Video (.jpg, .mp4)">
+        <input type="text" id="youtubeUrl" placeholder="Link ya YouTube">
+        <button class="btn-post" onclick="chapishaPost()">CHAPISHA SASA</button>
+        <button class="btn-post" style="background:#666;" onclick="fungaAdmin()">ONDOKA ADMIN MODE</button>
+    </div>
+
+    <div id="postContainer">
+        <p style="text-align:center;">Inapakia makala...</p>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2026 Mugisha Agr Services. Haki zote zimehifadhiwa.</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyBSQ_oUvMBVXUOlB573I6cbxMsoGs0U8B0",
+        authDomain: "mugisha-agr-services.firebaseapp.com",
+        projectId: "mugisha-agr-services",
+        storageBucket: "mugisha-agr-services.firebasestorage.app",
+        messagingSenderId: "206696080160",
+        appId: "1:206696080160:web:2405545d8cf850d88e2d45"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    let isAdmin = false; // Hii itajua kama umeingia password
+
+    // Visitor Counter
+    let visits = localStorage.getItem('visits') || 125;
+    visits = parseInt(visits) + 1;
+    localStorage.setItem('visits', visits);
+    document.getElementById('count').innerText = visits;
+
+    // Admin Access
+    function funguaAdmin() {
+        let pass = prompt("Ingiza Password ya Mugisha:");
+        if (pass === "020292") {
+            isAdmin = true;
+            document.getElementById('adminPanel').style.display = "block";
+            // Onyesha vitufe vya kudelete
+            let deleteBtns = document.querySelectorAll('.delete-btn');
+            deleteBtns.forEach(btn => btn.style.display = 'block');
+            window.scrollTo(0,0);
+        }
+    }
+
+    function fungaAdmin() {
+        isAdmin = false;
+        document.getElementById('adminPanel').style.display = "none";
+        let deleteBtns = document.querySelectorAll('.delete-btn');
+        deleteBtns.forEach(btn => btn.style.display = 'none');
+    }
+
+    // Load Posts
+    db.collection("makala").orderBy("tarehe", "desc").onSnapshot((snapshot) => {
+        const container = document.getElementById('postContainer');
+        let html = "";
+        
+        snapshot.forEach((doc) => {
+            const post = doc.data();
+            const postId = doc.id;
+            const date = post.tarehe ? post.tarehe.toDate().toLocaleDateString('sw-TZ') : "Hivi punde";
+            
+            let mediaHtml = "";
+            if(post.mediaUrl) {
+                if(post.mediaUrl.includes('.mp4')) {
+                    mediaHtml = `<div class="post-media"><video controls><source src="${post.mediaUrl}" type="video/mp4"></video></div>`;
+                } else {
+                    mediaHtml = `<div class="post-media"><img src="${post.mediaUrl}" alt="Mugisha Agr"></div>`;
+                }
+            }
+
+            let youtubeHtml = post.youtubeUrl ? `<div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;margin-top:15px;border-radius:10px;"><iframe style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" src="${post.youtubeUrl.replace('watch?v=', 'embed/')}" allowfullscreen></iframe></div>` : "";
+
+            // Kitufe cha kufuta (kitatokea tu kama isAdmin ni true)
+            let deleteBtnHtml = `<button class="delete-btn" id="btn-${postId}" onclick="futaPost('${postId}')" style="display: ${isAdmin ? 'block' : 'none'}"><i class="fas fa-trash"></i> Futa Makala Hii</button>`;
+
+            html += `
+                <div class="post-card" id="card-${postId}">
+                    ${mediaHtml}
+                    <div class="post-content">
+                        ${deleteBtnHtml}
+                        <h2>${post.kichwa}</h2>
+                        <div class="post-text">${post.maelezo}</div>
+                        ${youtubeHtml}
+                        
+                        <div class="author-section">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1995/1995515.png" class="author-img" alt="Mugisha">
+                            <div class="author-details">
+                                <h4>Mugisha Agr Services</h4>
+                                <div class="social-links">
+                                    <a href="https://wa.me/255700000000"><i class="fab fa-whatsapp"></i></a>
+                                    <a href="tel:+255700000000"><i class="fas fa-phone"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <p style="font-size:12px; color:#999; margin-top:15px;">Imechapishwa: ${date}</p>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    });
+
+    // Futa Post
+    async function futaPost(id) {
+        if(confirm("Je, una uhakika unataka kufuta kabisa makala hii?")) {
+            try {
+                await db.collection("makala").doc(id).delete();
+                alert("Makala imefutwa!");
+            } catch (e) { alert("Error: " + e.message); }
+        }
+    }
+
+    // Chapisha Post
+    async function chapishaPost() {
+        const title = document.getElementById('postTitle').value;
+        const content = document.getElementById('postContent').value;
+        const media = document.getElementById('mediaUrl').value;
+        const yt = document.getElementById('youtubeUrl').value;
+
+        if(!title || !content) return alert("Jaza vyote!");
+
+        try {
+            await db.collection("makala").add({
+                kichwa: title, maelezo: content, mediaUrl: media, youtubeUrl: yt,
+                tarehe: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Makala imechapishwa!");
+            document.getElementById('postTitle').value = "";
+            document.getElementById('postContent').value = "";
+            document.getElementById('mediaUrl').value = "";
+            document.getElementById('youtubeUrl').value = "";
+        } catch (e) { alert("Error: " + e.message); }
+    }
+</script>
+
+</body>
+</html>
